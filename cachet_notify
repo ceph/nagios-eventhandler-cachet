@@ -16,8 +16,13 @@ $service_status_type = $argv[4];
 $service_output = $argv[5];
 $long_service_output = $argv[6];
 
-// Combine service_output and long_service_output for cachet 'message' parameter
-$combined_service_output = $service_output . "\n" . $long_service_output;
+// unescape the newlines in long_service_output (thanks nagios)
+$unescaped_long_service_output = str_replace("\\n", "\n", $long_service_output);
+
+// Combine service_output and unescaped_long_service_output for cachet 'message' parameter
+$combined_service_output = $service_output . "\n" . $unescaped_long_service_output;
+
+// translate newlines to cachet markdown hard breaks (sp-sp-nl)
 $markdown_message = preg_replace("/\r\n|\r|\n/","  \n",$combined_service_output);
 
 define('CACHET_STATUS_INVESTIGATING', 1);
